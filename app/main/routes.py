@@ -5,10 +5,7 @@ from flask import render_template, request
 
 @blueprint.route('/')
 def index():
-    context = {
-        "name": "John Doe"
-    }
-    return render_template("main/index.html", **context)
+    return render_template("main/index.html", greeting="Welcome to flask project template")
 
 @blueprint.route('/test')
 def test():
@@ -17,9 +14,19 @@ def test():
 @blueprint.route('/post-test', methods=["GET", "POST"])
 def form_test():
     if request.method == "GET":
-        return render_template("main/post-test.html", message="You sent a GET!", method=request.method)
+        context = {
+            "message": "You sent a GET!",
+            "suggestion": "Try sending a POST...", 
+            "method": request.method
+        }
+        return render_template("main/post-test.html", **context)
     elif request.method == "POST": # This could just be an else because only GET and POST are allowed
-        return render_template("main/post-test.html", message="You sent a POST!", method=request.method)
+        context = {
+            "message": "You sent a POST!",
+            "suggestion": "Try sending a GET...", 
+            "method": request.method
+        }
+        return render_template("main/post-test.html", **context)
 
 
 @blueprint.route('/form-test', methods=["GET", "POST"])
