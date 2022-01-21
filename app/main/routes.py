@@ -1,29 +1,31 @@
+from crypt import methods
 from app.main import blueprint
-from flask import render_template
-from flask_login import current_user, login_required
-from app.clients import spotify_client
+from app.main.forms import TestForm
+from flask import render_template, request
 
 @blueprint.route('/')
 def index():
-    return render_template("main/index.html")
-
+    context = {
+        "name": "John Doe"
+    }
+    return render_template("main/index.html", **context)
 
 @blueprint.route('/test')
 def test():
-    return "You are at test"
+    return "We can return strings."
 
-@blueprint.route('/top-tracks')
-@login_required
-def top_tracks():
-    resp = spotify_client.get_top_tracks(current_user.access_token).json()
-    tracks = [
-        {
-            "name": item["name"],
-            "artist": item["artists"][0]["name"],
-            "album": item["album"]["name"]
-        }
-        for item
-        in resp["items"]
-    ]
+@blueprint.route('/post-test', methods=["GET", "POST"])
+def form_test():
+    if request.method == "GET":
+        return render_template("main/post-test.html", message="You sent a GET!", method=request.method)
+    elif request.method == "POST": # This could just be an else because only GET and POST are allowed
+        return render_template("main/post-test.html", message="You sent a POST!", method=request.method)
 
-    return render_template("main/top_tracks.html", tracks=tracks)
+
+@blueprint.route('/form-test', methods=["GET", "POST"])
+def post_test():
+    form = TestForm()
+    if form.validate_on_submit():
+        return render_template("main/form-test-success.html", name=form.name.data)
+    else:
+        return render_template("main/form-test.html", form=form)

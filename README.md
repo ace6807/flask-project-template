@@ -14,16 +14,7 @@
 ```
 
 2. Create a `.env` using `sample.env` as a template
-3. Configure application at https://developer.spotify.com/dashboard  and populate `.env`: 
-4. Init db
-
-```bash
-> export FLASK_APP=run.py
-> flask shell
-
->>> db.create_all()
-```
-
+3. Populate `.env`: 
 5. Run app
 ```bash
 > export FLASK_ENVIRONMENT=development
